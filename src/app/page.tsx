@@ -25,7 +25,9 @@ export default function SignUp() {
 
     if (data.token) {
       toast.success("Successfully Logged in!")
-      router.push("/Home")
+      setTimeout(()=>{
+        router.replace("/home")
+      },1000)
     } else {
       toast.error("Error while logging in. Try Again");
     }

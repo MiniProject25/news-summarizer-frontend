@@ -1,13 +1,13 @@
 'use client'
 
 import { useState } from "react";
-import Category from "../../../components/Category";
+// import Category from "../../../components/Category";
 // import NewsCard from "../components/NewsCard.jsx";
 
 export default function Home({ /*searchQuery*/ }) {
     const [articles, setArticles] = useState([]);
     const [trending, setTrending] = useState([]);
-    const [activeCategory, setActiveCategory] = useState("All");
+    // const [activeCategory, setActiveCategory] = useState("All");
 
     // fetch today’s articles
     // useEffect(() => {
@@ -39,7 +39,7 @@ export default function Home({ /*searchQuery*/ }) {
 
     return (
         <div>
-            <Category activeCategory={activeCategory} setActiveCategory={setActiveCategory} />
+            {/* <Category activeCategory={activeCategory} setActiveCategory={setActiveCategory} /> */}
             {/* Trending Section */}
             <h2 className="text-xl font-bold flex items-center">
                 <span className="text-red-500 mr-2">🔥</span> Trending Now
