@@ -29,7 +29,7 @@ export default function Home({ /*searchQuery*/ }) {
 
     return (
         <div>
-            <Category activeCategory={activeCategory} setActiveCategory={setActiveCategory} />
+            {/* <Category activeCategory={activeCategory} setActiveCategory={setActiveCategory} /> */}
             {/* Trending Section */}
             <h2 className="text-xl font-bold flex items-center">
                 <span className="text-red-500 mr-2">🔥</span> Daily News
