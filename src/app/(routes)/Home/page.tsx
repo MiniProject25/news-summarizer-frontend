@@ -1,71 +1,62 @@
-'use client'
+'use client';
 
-import { useState } from "react";
-import Category from "../../../components/Category";
-// import NewsCard from "../components/NewsCard.jsx";
+import { useEffect, useState } from 'react';
+import Category from '../../../components/Category';
+import NewsCard from '../../../components/NewsCard';
+import type { articleType, Source } from '@/types/types';
 
-export default function Home({ /*searchQuery*/ }) {
-    const [articles, setArticles] = useState([]);
-    const [trending, setTrending] = useState([]);
-    const [activeCategory, setActiveCategory] = useState("All");
+export default function Home({ searchQuery }: { searchQuery: string }) {
+    const [articles, setArticles] = useState<articleType[]>([]);
+    // const [trending, setTrending] = useState([]);
 
-    // fetch today’s articles
-    // useEffect(() => {
-    //     const fetchArticles = async () => {
-    //         const params = new URLSearchParams();
-    //         if (activeCategory !== "All") params.append("category", activeCategory);
-    //         if (searchQuery) params.append("search", searchQuery);
+    // Fetch today's articles
+    useEffect(() => {
+        const fetchArticles = async () => {
+            const params = new URLSearchParams();
+            if (searchQuery) params.append('search', searchQuery);
 
-    //         const res = await fetch(`http://localhost:8000/articles/?${params.toString()}`);
-    //         const data = await res.json();
-    //         setArticles(data);
-    //     };
-    //     fetchArticles();
-    // }, [activeCategory, searchQuery]);
+            try {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/article/articles/?${params.toString()}`);
+                const data = await res.json();
+                setArticles(data);
+            } catch (err) {
+                console.error('Error fetching articles:', err);
+            }
+        };
 
-    // fetch trending
-    // useEffect(() => {
-    //     const fetchTrending = async () => {
-    //         const params = new URLSearchParams();
-    //         if (activeCategory !== "All") params.append("category", activeCategory);
-    //         if (searchQuery) params.append("search", searchQuery);
-
-    //         const res = await fetch(`http://localhost:8000/articles/trending/?${params.toString()}`);
-    //         const data = await res.json();
-    //         setTrending(data);
-    //     };
-    //     fetchTrending();
-    // }, [activeCategory, searchQuery]);
+        fetchArticles();
+    }, [searchQuery]);
 
     return (
         <div>
-            <Category activeCategory={activeCategory} setActiveCategory={setActiveCategory} />
-            {/* Trending Section */}
+            {/* Daily Section */}
             <h2 className="text-xl font-bold flex items-center">
-                <span className="text-red-500 mr-2">🔥</span> Trending Now
+                <span className="text-red-500 mr-2">🔥</span> Daily News
             </h2>
+
             <div className="relative">
                 <div className="flex gap-4 overflow-x-auto hide-scrollbar px-2 py-2">
-                    {/* {trending.map((a) => (
+                    {articles.map((a) => (
                         <div key={a.article_id} className="flex-shrink-0 w-72">
                             <NewsCard {...a} />
                         </div>
-                    ))} */}
+                    ))}
                 </div>
 
                 {/* Fade left */}
-                {/* <div className="pointer-events-none absolute left-0 top-0 h-full w-12 bg-gradient-to-r from-white to-transparent" /> */}
+                <div className="pointer-events-none absolute left-0 top-0 h-full w-12 bg-gradient-to-r from-white to-transparent" />
 
                 {/* Fade right */}
                 <div className="pointer-events-none absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-white to-transparent" />
             </div>
 
-            {/* Today Section */}
+            {/* Today's Summary Section */}
             <h2 className="text-xl font-bold mt-8 mb-4">Today's News Summary</h2>
+
             <div className="grid mt-4 gap-6 md:grid-cols-2 lg:grid-cols-4">
-                {/* {articles.map((a) => (
+                {articles.map((a) => (
                     <NewsCard key={a.article_id} {...a} />
-                ))} */}
+                ))}
             </div>
         </div>
     );

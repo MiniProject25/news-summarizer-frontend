@@ -41,7 +41,6 @@ export async function middleware(req: NextRequest) {
         if (authToken) {
             return NextResponse.redirect(new URL("/Home", req.url))
         }
-        console.log("Hello middleware!")
         return NextResponse.next()
     }
 
