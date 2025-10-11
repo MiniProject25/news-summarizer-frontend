@@ -12,7 +12,6 @@ export default function SignUp() {
   const router = useRouter()
 
   const login = async () => {
-    // --- Your existing login logic remains untouched ---
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -25,9 +24,9 @@ export default function SignUp() {
 
     if (data.token) {
       toast.success("Successfully Logged in!")
-      setTimeout(()=>{
-        router.replace("/home")
-      },1000)
+      setTimeout(() => {
+        router.replace("/Home")
+      }, 1000)
     } else {
       toast.error("Error while logging in. Try Again");
     }

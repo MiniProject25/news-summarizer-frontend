@@ -1,22 +1,26 @@
 'use client';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import Category from "../../../components/Category";
-// import NewsCard from "../components/NewsCard.jsx";
+import NewsCard from "../../../components/NewsCard";
+import { articleType } from "@/types/types";
 
 export default function Home({ /*searchQuery*/ }) {
-    const [articles, setArticles] = useState([]);
-    const [trending, setTrending] = useState([]);
+    const [articles, setArticles] = useState<articleType[]>([]);
     // const [activeCategory, setActiveCategory] = useState("All");
 
     // Fetch today's articles
     useEffect(() => {
         const fetchArticles = async () => {
             const params = new URLSearchParams();
-            if (searchQuery) params.append('search', searchQuery);
+            // if (searchQuery) params.append('search', searchQuery);
 
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/article/articles/?${params.toString()}`);
+                const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/article/articles/`);
+
+                if (!res.ok) {
+                    throw new Error(`HTTP Error! Status: ${res.status}`)
+                }
                 const data = await res.json();
                 setArticles(data);
             } catch (err) {
@@ -25,13 +29,13 @@ export default function Home({ /*searchQuery*/ }) {
         };
 
         fetchArticles();
-    }, [searchQuery]);
+    }, []);
 
     return (
         <div>
             {/* <Category activeCategory={activeCategory} setActiveCategory={setActiveCategory} /> */}
             {/* Trending Section */}
-            <h2 className="text-xl font-bold flex items-center">
+            <h2 className="text-xl font-bold flex items-center mb-2">
                 <span className="text-red-500 mr-2">🔥</span> Daily News
             </h2>
 
