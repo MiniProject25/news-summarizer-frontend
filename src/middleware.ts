@@ -25,6 +25,7 @@ const verifyJWT = async (token: string): Promise<JwtPayload | null> => {
 export async function middleware(req: NextRequest) {
     // retrieve token from the cookies
     const authToken = req.cookies.get('access_token')?.value;
+    console.log("Auth token: ", authToken)
     const pathname = req.nextUrl.pathname;
 
     const publicBypassPaths = [
