@@ -42,8 +42,7 @@ export default function NewsCard({
 
     const handleCardClick = async () => {
         try {
-            const res = await fetch(
-                `/api/articles/${article_id}/increment_view`, // or hardcoded URL if needed
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/article/${article_id}/increment_view`, // or hardcoded URL if needed
                 { method: 'POST' }
             );
             if (res.ok) {
@@ -54,7 +53,7 @@ export default function NewsCard({
             console.error('Failed to increment views:', err);
         }
 
-        router.push(`/article/${article_id}`);
+        router.push(`/Home/${article_id}`);
     };
 
     return (

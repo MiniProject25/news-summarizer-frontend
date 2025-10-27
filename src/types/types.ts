@@ -20,4 +20,5 @@ export interface articleType {
     right_bias?: number;
     views?: number;
     sources?: Source[];
+    content_hash: string;
 }
