@@ -106,10 +106,26 @@ export default function NewsCard({
                             <span className="text-blue-600">Right Wing {(right_bias / (left_bias + center_bias + right_bias) * 100) || 0}%</span>
                         </div>
                         <div className="h-2 w-full bg-gray-200 rounded flex overflow-hidden">
-                            <div className="bg-red-500" style={{ width: `${left_bias || 0}%` }}></div>
-                            <div className="bg-green-500" style={{ width: `${center_bias || 0}%` }}></div>
-                            <div className="bg-blue-500" style={{ width: `${right_bias || 0}%` }}></div>
+                            <div
+                                className="bg-red-500"
+                                style={{
+                                    width: `${(left_bias / (left_bias + center_bias + right_bias || 1)) * 100}%`,
+                                }}
+                            ></div>
+                            <div
+                                className="bg-green-500"
+                                style={{
+                                    width: `${(center_bias / (left_bias + center_bias + right_bias || 1)) * 100}%`,
+                                }}
+                            ></div>
+                            <div
+                                className="bg-blue-500"
+                                style={{
+                                    width: `${(right_bias / (left_bias + center_bias + right_bias || 1)) * 100}%`,
+                                }}
+                            ></div>
                         </div>
+
                     </div>
 
                     {/* Sources */}

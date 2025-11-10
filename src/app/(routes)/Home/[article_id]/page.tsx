@@ -1,6 +1,6 @@
 'use client';
 
-import { articleType } from '@/types/types';
+import { articleType, NewsSource, RelatedArticle, SourceBreakdownData } from '@/types/types';
 import React, { useEffect, useState } from 'react';
 
 type BiasIndicatorProps = {
@@ -58,6 +58,55 @@ const BiasIndicator = ({ left, center, right }: BiasIndicatorProps) => {
     );
 };
 
+// Related Articles Component
+const RelatedArticlesList: React.FC<{ articles: RelatedArticle[] }> = ({ articles }) => {
+    if (articles.length === 0) {
+        return (
+            <div>
+                No related Articles
+            </div>
+        )
+    };
+    return (
+        <div className="p-5 bg-white rounded-xl shadow-2xl border border-gray-100">
+            <h3 className="text-xl font-bold text-gray-800 mb-4 border-b pb-2">⭐ Similar Articles</h3>
+            <ul className="space-y-3">
+                {articles.map((art) => (
+                    <li key={art.id} className="text-sm">
+                        <a
+                            href={`${art.url}`}
+                            className="text-indigo-600 hover:text-indigo-800 font-medium transition duration-150 ease-in-out block"
+                        >
+                            {art.title}
+                        </a>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+};
+
+// Source breakdown component
+const SourceColumn: React.FC<{ title: string, color: string, sources: NewsSource[] }> = ({ title, color, sources }) => (
+    <div className={`p-4 rounded-xl border border-${color}-100 w-full`}>
+        <h4 className={`text-lg font-semibold text-${color}-700 mb-3`}>{title} ({sources.length})</h4>
+        <ul className="space-y-2 text-sm">
+            {sources.length > 0 ? (
+                sources.map((source) => (
+                    <li key={source.url} className="border-b border-gray-100 pb-1 last:border-b-0">
+                        <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-gray-900 font-normal">
+                            {source.name}
+                            <span className="text-xs text-gray-400 ml-2">({new Date(source.publication_date).toLocaleDateString()})</span>
+                        </a>
+                    </li>
+                ))
+            ) : (
+                <p className="text-sm text-gray-500 italic">No sources found.</p>
+            )}
+        </ul>
+    </div>
+);
+
 // Component is now prop-free
 export default function ArticlePage() {
 
@@ -66,6 +115,9 @@ export default function ArticlePage() {
     const [article, setArticle] = useState<articleType | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    const [relatedArticles, setRelatedArticles] = useState<RelatedArticle[]>([])
+    // const [sourceList, setSourceList] = useState<SourceBreakdownData[]>([])
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -93,14 +145,28 @@ export default function ArticlePage() {
 
             try {
                 // Use the state variable finalId directly in the fetch URL
-                const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/article/${finalId}`);
+                const [res, relatedIdsRes] = await Promise.all([
+                    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/article/${finalId}`),
+                    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/article/similar-articles/${finalId}`)
+                ]);
 
                 if (!res.ok) {
                     throw new Error(`Failed to fetch article ${finalId}: HTTP ${res.status}`);
                 }
+                if (!relatedIdsRes.ok) console.warn("Could not fetch related article IDs.")
 
                 const data = await res.json() as articleType;
                 setArticle(data);
+
+                const relatedIdsResponse = await relatedIdsRes.json();
+                const relatedIdsData: number[] = relatedIdsResponse.results || []
+                if (relatedIdsData.length > 0) {
+                    const relatedArticlesRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/article/details?ids=${relatedIdsData.join(',')}`)
+                    if (relatedArticlesRes.ok) {
+                        const relatedArticlesData = await relatedArticlesRes.json();
+                        setRelatedArticles(relatedArticlesData);
+                    }
+                }
             } catch (err: any) {
                 console.error("Error fetching article:", err);
                 setError(err.message || 'An unknown error occurred while fetching the article.');
@@ -196,6 +262,8 @@ export default function ArticlePage() {
                             right={article.right_bias || 0}
                         />
                     )}
+
+                    <RelatedArticlesList articles={relatedArticles} />
                 </div>
             </div>
         </div>

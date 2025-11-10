@@ -22,3 +22,21 @@ export interface articleType {
     sources?: Source[];
     content_hash: string;
 }
+
+export interface RelatedArticle {
+    id: string; // The articleId returned by your RAG service
+    title: string;
+    url: string; // URL to the article page
+}
+
+export interface NewsSource {
+    name: string;
+    url: string;
+    publication_date: string; // ISO string or similar
+}
+
+export interface SourceBreakdownData {
+    left: NewsSource[];
+    center: NewsSource[];
+    right: NewsSource[];
+}
