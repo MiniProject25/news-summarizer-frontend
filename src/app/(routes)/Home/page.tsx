@@ -42,6 +42,20 @@ export default function Home() {
     const [articles, setArticles] = useState<articleType[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const SOURCES = [
+        { name: "Forbes", url: "https://www.forbes.com", bias: "center" },
+
+        { name: "Bloomberg", url: "https://www.bloomberg.com", bias: "left" },
+        { name: "CNBC", url: "https://www.cnbc.com", bias: "left" },
+        { name: "Financial Times", url: "https://www.ft.com", bias: "center" },
+        { name: "The Economist", url: "https://www.economist.com", bias: "left" },
+        { name: "Harvard Business Review", url: "https://hbr.org", bias: "center" },
+        { name: "MarketWatch", url: "https://www.marketwatch.com", bias: "center" },
+        { name: "Wall Street Journal – Business", url: "https://www.wsj.com", bias: "center" },
+        { name: "Business Insider", url: "https://www.businessinsider.com", bias: "center" },
+        { name: "Investopedia", url: "https://www.investopedia.com", bias: "center" },
+    ];
+
 
     useEffect(() => {
         const fetchArticles = async () => {
@@ -71,13 +85,24 @@ export default function Home() {
             {/* Main Layout */}
             <div className="max-w-[1400px] mx-auto px-4 py-12 grid grid-cols-[220px_1fr_220px] gap-8">
                 {/* LEFT SIDEBAR */}
-                <aside className="bg-white border border-gray-300 rounded-xl p-4">
-                    <h3 className="font-semibold mb-4">Sources where we fetch from</h3>
-                    <ul className="space-y-2 text-gray-600">
-                        <li>forbes.com</li>
-                        <li>theeconomist.com</li>
+                <aside className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+                    <h3 className="font-semibold mb-4 text-gray-800">Sources we fetch from</h3>
+
+                    <ul className="space-y-3">
+                        {SOURCES.map((s) => (
+                            <li key={s.name}>
+                                <a
+                                    href={s.url}
+                                    target="_blank"
+                                    className="text-blue-600 hover:underline hover:text-blue-800 transition"
+                                >
+                                    {s.name}
+                                </a>
+                            </li>
+                        ))}
                     </ul>
                 </aside>
+
 
                 {/* CENTER CONTENT */}
                 <section>

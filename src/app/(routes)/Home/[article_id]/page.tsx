@@ -107,7 +107,6 @@ const SourceColumn: React.FC<{ title: string, color: string, sources: NewsSource
     </div>
 );
 
-// Component is now prop-free
 export default function ArticlePage() {
 
     // State to hold the article ID extracted from the browser's URL

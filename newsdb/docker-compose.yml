@@ -1,0 +1,10 @@
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    container_name: pg17_vector
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: newsInfo
+    ports:
+      - "5432:5432"
