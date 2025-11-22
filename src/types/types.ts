@@ -18,7 +18,7 @@ export interface articleType {
     left_bias?: number;
     center_bias?: number;
     right_bias?: number;
-    views?: number;
+    views: number;
     sources?: Source[];
     content_hash: string;
 }

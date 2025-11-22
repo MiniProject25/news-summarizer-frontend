@@ -29,11 +29,17 @@ const logout = async () => {
     }
 }
 
-export default function NavBar() {
+interface NavBarProps {
+    searchQuery: string;
+    setSearchQuery: (value: string) => void;
+}
+
+export default function NavBar({ searchQuery, setSearchQuery }: NavBarProps) {
     return (
         <nav className="flex border-b sticky top-0 z-50 bg-white shadow-sm px-8 py-3 items-center justify-between">
-            <h1 className="text-xl font-semibold">News-Aggreg</h1>
-
+            <Link href="/Home" className="font-bold text-xl hover:text-blue-600">
+                News-Aggreg
+            </Link>
             <NavigationMenu className="">
                 <NavigationMenuList className="flex gap-6">
                     <NavigationMenuItem>
@@ -48,14 +54,20 @@ export default function NavBar() {
                     </NavigationMenuItem>
                     <NavigationMenuItem>
                         <NavigationMenuLink asChild>
-                            <Link href="/contact">Contact Us</Link>
+                            <Link href="/contactus">Contact Us</Link>
                         </NavigationMenuLink>
                     </NavigationMenuItem>
                 </NavigationMenuList>
             </NavigationMenu>
 
             <div className="flex gap-x-4">
-                <Input className="w-68" placeholder="Search for an article"></Input>
+                <input
+                    type="text"
+                    placeholder="Search articles..."
+                    className="px-4 py-2 border rounded-lg w-64"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
                 <button type="submit" className="cursor-pointer w-full py-1 px-1 bg-slate-800 text-white font-semibold rounded-lg hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors" onClick={logout}>Logout</button>
             </div>
             <Toaster position="bottom-center" />

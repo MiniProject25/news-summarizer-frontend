@@ -21,9 +21,9 @@ const BiasIndicator = ({ left, center, right }: BiasIndicatorProps) => {
     const rightPercent = (right / total) * 100;
 
     const data = [
-        { label: 'Left', percent: leftPercent, color: 'bg-blue-500', textColor: 'text-blue-600' },
+        { label: 'Left', percent: leftPercent, color: 'bg-red-500', textColor: 'text-red-600' },
         { label: 'Center', percent: centerPercent, color: 'bg-green-500', textColor: 'text-green-600' },
-        { label: 'Right', percent: rightPercent, color: 'bg-red-500', textColor: 'text-red-600' },
+        { label: 'Right', percent: rightPercent, color: 'bg-blue-500', textColor: 'text-blue-600' },
     ];
 
     return (
@@ -116,7 +116,11 @@ export default function ArticlePage() {
     const [error, setError] = useState<string | null>(null);
 
     const [relatedArticles, setRelatedArticles] = useState<RelatedArticle[]>([])
-    // const [sourceList, setSourceList] = useState<SourceBreakdownData[]>([])
+    const [sourceList, setSourceList] = useState<SourceBreakdownData>({
+        left: [],
+        center: [],
+        right: []
+    })
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -144,15 +148,17 @@ export default function ArticlePage() {
 
             try {
                 // Use the state variable finalId directly in the fetch URL
-                const [res, relatedIdsRes] = await Promise.all([
+                const [res, relatedIdsRes, sourceRes] = await Promise.all([
                     fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/article/${finalId}`),
-                    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/article/similar-articles/${finalId}`)
+                    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/article/similar-articles/${finalId}`),
+                    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/article/source-breakdown/${finalId}`)
                 ]);
 
                 if (!res.ok) {
                     throw new Error(`Failed to fetch article ${finalId}: HTTP ${res.status}`);
                 }
                 if (!relatedIdsRes.ok) console.warn("Could not fetch related article IDs.")
+                if (!sourceRes.ok) console.warn("Could not load the sources")
 
                 const data = await res.json() as articleType;
                 setArticle(data);
@@ -166,6 +172,9 @@ export default function ArticlePage() {
                         setRelatedArticles(relatedArticlesData);
                     }
                 }
+
+                const sourceData = await sourceRes.json();
+                setSourceList(sourceData)
             } catch (err: any) {
                 console.error("Error fetching article:", err);
                 setError(err.message || 'An unknown error occurred while fetching the article.');
@@ -263,6 +272,32 @@ export default function ArticlePage() {
                     )}
 
                     <RelatedArticlesList articles={relatedArticles} />
+                    {sourceList && (
+                        <div className="p-5 bg-white rounded-xl shadow-2xl border border-gray-100">
+                            <h3 className="text-xl font-bold text-gray-800 mb-4 border-b pb-2">
+                                Coverage By Political Spectrum
+                            </h3>
+
+                            <div className="grid grid-cols-1 gap-4">
+                                <SourceColumn
+                                    title="Left"
+                                    color="red"
+                                    sources={sourceList.left || []}
+                                />
+                                <SourceColumn
+                                    title="Center"
+                                    color="green"
+                                    sources={sourceList.center || []}
+                                />
+                                <SourceColumn
+                                    title="Right"
+                                    color="blue"
+                                    sources={sourceList.right || []}
+                                />
+                            </div>
+                        </div>
+                    )}
+
                 </div>
             </div>
         </div>
